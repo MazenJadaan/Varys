@@ -17,7 +17,7 @@ class OpenSearchService
     }
 
     public function getLogs (OpenSearchQueryDTO $queryDto){
-        return $this->osRepo->fetchData($queryDto);
+        // return $this->osRepo->search($queryDto);
     }
 
 }

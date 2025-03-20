@@ -112,15 +112,15 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
         
-        'opensearch' => [
-            'driver'       => 'opensearch',
-            'hosts'        =>  env('OPENSEARCH_HOST', ''),
-            'basic_auth'   => [
+       'opensearch' => [
+        'hosts'        => env('OPENSEARCH_HOST', 'wazuh1.indexer'),
+        'port'         => env('OPENSEARCH_PORT', 9200),  // انقل البورت هنا
+        'basic_auth'   => [
             'username' => env('OPENSEARCH_USER', ''),
             'password' => env('OPENSEARCH_PASS', ''),
-            'port' => env('OPENSEARCH_PORT' , 9200 ),
-            'index' => env('INDEX_PATTERN','')
         ],
+        'index'        => env('INDEX_PATTERN','')
+    ],
 
     ],
 
@@ -180,5 +180,4 @@ return [
 
     ],
 
-]
 ];

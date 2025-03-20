@@ -1,23 +1,32 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Services\OpenSearchService;
-use App\DTOs\OpenSearchQueryDTO;
+use App\Repositories\OpenSearchRepo;
+use Illuminate\Http\Request;
 
-class OpenSearchCtrl extends Controller
-{
-    protected $osService;
+class OpenSearchController extends Controller {
+    protected $openSearchRepo;
 
-    public function __construct(OpenSearchService $osService)
-    {
-        $this->osService = $osService;
+    public function __construct(OpenSearchRepo $openSearchRepo) {
+        $this->openSearchRepo = $openSearchRepo;
     }
 
-    public function getLogs () {
-        $interval = config('custom.interval_seconds',300);
-        $queryDTO = new OpenSearchQueryDTO($interval);
-        $logs = $this->osService->getLogs($queryDTO);
-        return response()->json($logs);
+    public function search(Request $request) {
+        $query = $request->input('query', '*');
+
+        $params = [
+            'index' => config('database.opensearch.index'),
+            'body' => [
+                'query' => [
+                    'query_string' => [
+                        'query' => $query
+                    ]
+                ]
+            ]
+        ];
+
+        $results = $this->openSearchRepo->search($params);
+        return response()->json($results);
     }
 }
+

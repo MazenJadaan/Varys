@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\OpenSearchCtrl;
+use App\Http\Controllers\OpenSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -9,5 +9,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/opensearch/test', [OpenSearchCtrl::class, 'testConnection']);
-Route::get('/getLogs',[OpenSearchCtrl::class,'getLogs']);
+// Route::get('/opensearch/test', [OpenSearchCtrl::class, 'testConnection']);
+// Route::get('/getLogs',[OpenSearchCtrl::class,'getLogs']);
+
+Route::get('/search', [OpenSearchController::class, 'search']);
+

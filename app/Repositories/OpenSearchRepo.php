@@ -1,31 +1,33 @@
-<?php
-
+<?php 
 namespace App\Repositories;
-
-use App\DTOs\OpenSearchQueryDTO;
-use App\Traits\DataCleaner;
-use OpenSearch\Client;
 use OpenSearch\ClientBuilder;
 
 
-class OpenSearchRepo{
 
-    use DataCleaner;
-    protected Client $client;
+class OpenSearchRepo {
+    protected $client;
 
     public function __construct() {
-        $this->client = ClientBuilder::create()
-            ->setHosts([config('database.opensearch.hosts')]) 
-            ->setSSLVerification([config('custom.SSL.verify_ssl')])
-            ->build();
+        $host = config('database.opensearch.hosts', 'wazuh1.indexer');
+        $port = config('database.opensearch.port', 9200); 
+        $username = config('database.opensearch.basic_auth.username', 'monitor');
+        $password = config('database.opensearch.basic_auth.password', 'gIn4G6VA8S5.f&V?nl1j');
+        $sslVerify = config('custom.SSL.verify_ssl', false); 
+
+        $fullHost = "https://{$host}:{$port}"; 
+
+        $clientBuilder = ClientBuilder::create()->setHosts([$fullHost]);
+
+        if (!empty($username) && !empty($password)) {
+            $clientBuilder->setBasicAuthentication($username, $password);
+        }
+
+        $clientBuilder->setSSLVerification($sslVerify);
+
+        $this->client = $clientBuilder->build();
     }
 
-    public function fetchData (OpenSearchQueryDTO $queryDTO) {
-        $param = [
-            'index' => config('database.opensearch.index'),
-            'body' => $queryDTO->toArray()
-        ];
-
-        return $this->cleanData($param);
+    public function search(array $params) {
+        return $this->client->search($params);
     }
 }
